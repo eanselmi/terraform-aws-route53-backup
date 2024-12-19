@@ -1,6 +1,6 @@
 <!-- markdownlint-disable -->
-# terraform-aws-route53-backup [![Latest Release](https://img.shields.io/github/release/outsideopen/terraform-aws-route53-backup-restore.svg)](https://github.com/outsideopen/terraform-aws-route53-backup-restore/releases/latest)
-<!-- markdownlint-restore -->
+# terraform-aws-route53-backup [![Latest Release](https://img.shields.io/github/release/eanselmi/terraform-aws-route53-backup.svg)](https://github.com/eanselmi/terraform-aws-route53-backup/releases/latest)
+<!-- markdownlint -->
 
 Terraform module for provisioning Route53 backup/restore lambda functions.
 
@@ -17,7 +17,7 @@ Included Features:
 
 ```hcl
 module "instance" {
-    source = "outsideopen/route53-backup-restore/aws"
+    source = "eanselmi/route53-backup/aws"
     # Outside Open recommends pinning every module to a specific version
     # version     = "x.x.x"
     prefix = "dev"
@@ -28,7 +28,7 @@ module "instance" {
 
 ```hcl
 module "instance" {
-    source = "outsideopen/route53-backup-restore/aws"
+    source = "eanselmi/route53-backup/aws"
     # Outside Open recommends pinning every module to a specific version
     # version        = "x.x.x"
     prefix           = "dev"
