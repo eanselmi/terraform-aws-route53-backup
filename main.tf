@@ -129,7 +129,7 @@ module "backup" {
 }
 
 module "backup_events" {
-  source      = "./_cloud_event_rules"
+  source      = "./cloud_event_rules"
   name        = "${local.name}-events"
   lambda_arn  = module.backup.arn
   lambda_name = module.backup.function_name
