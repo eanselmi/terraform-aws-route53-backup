@@ -23,7 +23,7 @@ data "archive_file" "route53_utils" {
 
 module "s3_bucket" {
   source             = "cloudposse/s3-bucket/aws"
-  version            = "1.0.0"
+  version            = "4.9.0"
   name               = "${local.name}-backups"
   acl                = "private"
   enabled            = true
@@ -107,7 +107,7 @@ resource "aws_iam_policy" "backup" {
 
 module "backup" {
   source           = "cloudposse/lambda-function/aws"
-  version          = "0.4.1"
+  version          = "0.6.1"
   filename         = data.archive_file.route53_utils.output_path
   function_name    = "${local.name}-backup"
   handler          = "route53_backup.handle"
@@ -195,7 +195,7 @@ module "restore" {
   count = var.enable_restore ? 1 : 0
 
   source           = "cloudposse/lambda-function/aws"
-  version          = "0.4.1"
+  version          = "0.6.1"
   filename         = data.archive_file.route53_utils.output_path
   function_name    = "${local.name}-restore"
   handler          = "route53_restore.handle"
