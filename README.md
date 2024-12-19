@@ -54,13 +54,13 @@ aws lambda invoke --function-name {prefix}-route53-backup --output text /dev/std
 aws lambda invoke --function-name {prefix}-route53-restore --output text /dev/stdout
 
 # restore (single zone by name)
-aws lambda invoke --function-name {prefix}-route53-restore --payload '{"names":["example.com"]}' --output text /dev/stdout
+aws lambda invoke --function-name {prefix}-route53-restore --payload '{"names":["example.com"]}' --cli-binary-format raw-in-base64-out --output text /dev/stdout
 
 # restore (single zone by id)
-aws lambda invoke --function-name {prefix}-route53-restore --payload '{"ids":["Z750C051B"]}' --output text /dev/stdout
+aws lambda invoke --function-name {prefix}-route53-restore --payload '{"ids":["Z750C051B"]}' --cli-binary-format raw-in-base64-out --output text /dev/stdout
 
 # restore (specific backup)
-aws lambda invoke --function-name {prefix}-route53-restore --payload '{"from":"2022-12-28T00:00:00Z"}' --output text /dev/stdout
+aws lambda invoke --function-name {prefix}-route53-restore --payload '{"from":"2022-12-28T00:00:00Z"}' --cli-binary-format raw-in-base64-out --output text /dev/stdout
 ```
 
 <!-- markdownlint-disable -->
