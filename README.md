@@ -4,6 +4,8 @@
 
 Terraform module for provisioning Route53 backup/restore lambda functions.
 
+![image](https://i.ibb.co/4n9zCFn8/r53-backup.png)
+
 Included Features:
 * Versioned, encrypted S3 bucket with lifecycle based retention
 * Backup of Route53 hosted zones, record sets, health checks, VPC associations and tags
@@ -112,12 +114,12 @@ aws lambda invoke --function-name {prefix}-route53-restore --payload '{"dryrun":
 
 ### Restore event payload
 
-| Key      | Type       | Description                                                                          |
-| -------- | ---------- | ------------------------------------------------------------------------------------ |
-| `from`   | `string`   | Timestamp of the backup to restore. Defaults to `latest_backup_timestamp`.           |
-| `ids`    | `[string]` | Only restore these hosted zones. Accepts `Z750C051B` or `/hostedzone/Z750C051B`.      |
-| `names`  | `[string]` | Only restore these hosted zones by name. The trailing dot and casing are optional.    |
-| `dryrun` | `bool`     | Log what would be restored without calling Route53. Defaults to `false`.              |
+| Key      | Type       | Description                                                                        |
+| -------- | ---------- | ---------------------------------------------------------------------------------- |
+| `from`   | `string`   | Timestamp of the backup to restore. Defaults to `latest_backup_timestamp`.         |
+| `ids`    | `[string]` | Only restore these hosted zones. Accepts `Z750C051B` or `/hostedzone/Z750C051B`.   |
+| `names`  | `[string]` | Only restore these hosted zones by name. The trailing dot and casing are optional. |
+| `dryrun` | `bool`     | Log what would be restored without calling Route53. Defaults to `false`.           |
 
 `ids` and `names` can be combined, a zone matching either one is restored. Any id or
 name that no backup matched is reported in the lambda log, so a typo does not look like
@@ -217,46 +219,46 @@ terraform init -backend=false && terraform validate
 
 ## Inputs
 
-| Name                                                                  | Description                                                                                                     | Type          | Default      | Required |
-| --------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------- | ------------ | :------: |
-| <a name="prefix">prefix</a>                                           | Prefix for every resource. The S3 bucket is named `{prefix}-route53-backups`, so it has to be globally unique   | `string`      | n/a          |   yes    |
-| <a name="alarm_actions">alarm_actions</a>                             | ARNs (usually an SNS topic) notified when a backup alarm fires                                                  | `list(string)`| `[]`         |    no    |
-| <a name="alarms_enabled">alarms_enabled</a>                           | Create CloudWatch alarms for backup failures and for backups that stop running                                  | `bool`        | `true`       |    no    |
-| <a name="backup_memory_size">backup_memory_size</a>                   | Memory (in MB) of the backup lambda                                                                             | `number`      | `512`        |    no    |
-| <a name="backup_timeout">backup_timeout</a>                           | Backup lambda timeout (in seconds)                                                                              | `number`      | `300`        |    no    |
-| <a name="dlq_enabled">dlq_enabled</a>                                 | Create an SQS dead letter queue for backup invocations that fail every retry                                    | `bool`        | `true`       |    no    |
-| <a name="empty_bucket">empty_bucket</a>                               | Delete a non-empty S3 bucket. **THESE OBJECTS WILL NOT BE RECOVERABLE** even if versioned                       | `bool`        | `false`      |    no    |
-| <a name="enable_restore">enable_restore</a>                           | Deploy the restore lambda. It is never scheduled, only invoked by hand                                          | `bool`        | `true`       |    no    |
-| <a name="interval">interval</a>                                       | Interval (in minutes) of the scheduled backup. Ignored when `schedule_expression` is set                        | `number`      | `120`        |    no    |
-| <a name="kms_key_arn">kms_key_arn</a>                                 | KMS key ARN for the backups. Defaults to SSE-S3 (AES256) when unset                                             | `string`      | `null`       |    no    |
-| <a name="log_level">log_level</a>                                     | Log level of the lambdas                                                                                        | `string`      | `INFO`       |    no    |
-| <a name="log_retention_days">log_retention_days</a>                   | Retention of the lambda log groups. Use 0 to keep the logs forever                                              | `number`      | `30`         |    no    |
-| <a name="missing_backup_alarm_period">missing_backup_alarm_period</a> | Window (in seconds) the "no backup ran" alarm looks at. Defaults to twice the `interval`, capped at a day       | `number`      | `null`       |    no    |
-| <a name="object_lock_days">object_lock_days</a>                       | Days a backup object stays locked. Defaults to `retention_period`                                               | `number`      | `null`       |    no    |
-| <a name="object_lock_mode">object_lock_mode</a>                       | Enable S3 Object Lock, `GOVERNANCE` or `COMPLIANCE`. Only settable when the bucket is created                    | `string`      | `null`       |    no    |
-| <a name="python_runtime">python_runtime</a>                           | Python runtime of the backup/restore lambdas                                                                    | `string`      | `python3.12` |    no    |
-| <a name="restore_memory_size">restore_memory_size</a>                 | Memory (in MB) of the restore lambda                                                                            | `number`      | `512`        |    no    |
-| <a name="restore_timeout">restore_timeout</a>                         | Restore lambda timeout (in seconds)                                                                             | `number`      | `900`        |    no    |
-| <a name="retention_period">retention_period</a>                       | Time (in days) that a backup is kept before it expires                                                          | `number`      | `14`         |    no    |
-| <a name="schedule_expression">schedule_expression</a>                 | EventBridge schedule expression for the backup, e.g. `cron(0 3 * * ? *)`. Overrides `interval`                  | `string`      | `null`       |    no    |
-| <a name="ssl_requests_only">ssl_requests_only</a>                     | Attach a bucket policy that denies any request not made over TLS                                                | `bool`        | `true`       |    no    |
-| <a name="tags">tags</a>                                               | Tags applied to every resource this module creates                                                              | `map(string)` | `{}`         |    no    |
+| Name                                                                  | Description                                                                                                   | Type           | Default      | Required |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------- | ------------ | :------: |
+| <a name="prefix">prefix</a>                                           | Prefix for every resource. The S3 bucket is named `{prefix}-route53-backups`, so it has to be globally unique | `string`       | n/a          |   yes    |
+| <a name="alarm_actions">alarm_actions</a>                             | ARNs (usually an SNS topic) notified when a backup alarm fires                                                | `list(string)` | `[]`         |    no    |
+| <a name="alarms_enabled">alarms_enabled</a>                           | Create CloudWatch alarms for backup failures and for backups that stop running                                | `bool`         | `true`       |    no    |
+| <a name="backup_memory_size">backup_memory_size</a>                   | Memory (in MB) of the backup lambda                                                                           | `number`       | `512`        |    no    |
+| <a name="backup_timeout">backup_timeout</a>                           | Backup lambda timeout (in seconds)                                                                            | `number`       | `300`        |    no    |
+| <a name="dlq_enabled">dlq_enabled</a>                                 | Create an SQS dead letter queue for backup invocations that fail every retry                                  | `bool`         | `true`       |    no    |
+| <a name="empty_bucket">empty_bucket</a>                               | Delete a non-empty S3 bucket. **THESE OBJECTS WILL NOT BE RECOVERABLE** even if versioned                     | `bool`         | `false`      |    no    |
+| <a name="enable_restore">enable_restore</a>                           | Deploy the restore lambda. It is never scheduled, only invoked by hand                                        | `bool`         | `true`       |    no    |
+| <a name="interval">interval</a>                                       | Interval (in minutes) of the scheduled backup. Ignored when `schedule_expression` is set                      | `number`       | `120`        |    no    |
+| <a name="kms_key_arn">kms_key_arn</a>                                 | KMS key ARN for the backups. Defaults to SSE-S3 (AES256) when unset                                           | `string`       | `null`       |    no    |
+| <a name="log_level">log_level</a>                                     | Log level of the lambdas                                                                                      | `string`       | `INFO`       |    no    |
+| <a name="log_retention_days">log_retention_days</a>                   | Retention of the lambda log groups. Use 0 to keep the logs forever                                            | `number`       | `30`         |    no    |
+| <a name="missing_backup_alarm_period">missing_backup_alarm_period</a> | Window (in seconds) the "no backup ran" alarm looks at. Defaults to twice the `interval`, capped at a day     | `number`       | `null`       |    no    |
+| <a name="object_lock_days">object_lock_days</a>                       | Days a backup object stays locked. Defaults to `retention_period`                                             | `number`       | `null`       |    no    |
+| <a name="object_lock_mode">object_lock_mode</a>                       | Enable S3 Object Lock, `GOVERNANCE` or `COMPLIANCE`. Only settable when the bucket is created                 | `string`       | `null`       |    no    |
+| <a name="python_runtime">python_runtime</a>                           | Python runtime of the backup/restore lambdas                                                                  | `string`       | `python3.12` |    no    |
+| <a name="restore_memory_size">restore_memory_size</a>                 | Memory (in MB) of the restore lambda                                                                          | `number`       | `512`        |    no    |
+| <a name="restore_timeout">restore_timeout</a>                         | Restore lambda timeout (in seconds)                                                                           | `number`       | `900`        |    no    |
+| <a name="retention_period">retention_period</a>                       | Time (in days) that a backup is kept before it expires                                                        | `number`       | `14`         |    no    |
+| <a name="schedule_expression">schedule_expression</a>                 | EventBridge schedule expression for the backup, e.g. `cron(0 3 * * ? *)`. Overrides `interval`                | `string`       | `null`       |    no    |
+| <a name="ssl_requests_only">ssl_requests_only</a>                     | Attach a bucket policy that denies any request not made over TLS                                              | `bool`         | `true`       |    no    |
+| <a name="tags">tags</a>                                               | Tags applied to every resource this module creates                                                            | `map(string)`  | `{}`         |    no    |
 
 ## Outputs
 
-| Name                                                        | Description                                                        |
-| ----------------------------------------------------------- | ------------------------------------------------------------------ |
-| <a name="alarm_names">alarm_names</a>                       | Names of the CloudWatch alarms watching the backup                 |
-| <a name="backup_function_arn">backup_function_arn</a>       | ARN of the backup lambda                                           |
-| <a name="backup_function_name">backup_function_name</a>     | Name of the backup lambda                                          |
-| <a name="dead_letter_queue_arn">dead_letter_queue_arn</a>   | ARN of the backup dead letter queue                                |
-| <a name="dead_letter_queue_url">dead_letter_queue_url</a>   | URL of the backup dead letter queue                                |
-| <a name="event_rule_arns">event_rule_arns</a>               | ARNs of the EventBridge rules invoking the backup                  |
-| <a name="function_names">function_names</a>                 | Names of the lambdas this module created                           |
-| <a name="restore_function_arn">restore_function_arn</a>     | ARN of the restore lambda, null when `enable_restore` is false     |
-| <a name="restore_function_name">restore_function_name</a>   | Name of the restore lambda, null when `enable_restore` is false    |
-| <a name="s3_bucket_arn">s3_bucket_arn</a>                   | ARN of the bucket holding the backups                              |
-| <a name="s3_bucket_name">s3_bucket_name</a>                 | Name of the bucket holding the backups                             |
-| <a name="schedule_expression">schedule_expression</a>       | The EventBridge schedule the backup runs on                        |
+| Name                                                      | Description                                                     |
+| --------------------------------------------------------- | --------------------------------------------------------------- |
+| <a name="alarm_names">alarm_names</a>                     | Names of the CloudWatch alarms watching the backup              |
+| <a name="backup_function_arn">backup_function_arn</a>     | ARN of the backup lambda                                        |
+| <a name="backup_function_name">backup_function_name</a>   | Name of the backup lambda                                       |
+| <a name="dead_letter_queue_arn">dead_letter_queue_arn</a> | ARN of the backup dead letter queue                             |
+| <a name="dead_letter_queue_url">dead_letter_queue_url</a> | URL of the backup dead letter queue                             |
+| <a name="event_rule_arns">event_rule_arns</a>             | ARNs of the EventBridge rules invoking the backup               |
+| <a name="function_names">function_names</a>               | Names of the lambdas this module created                        |
+| <a name="restore_function_arn">restore_function_arn</a>   | ARN of the restore lambda, null when `enable_restore` is false  |
+| <a name="restore_function_name">restore_function_name</a> | Name of the restore lambda, null when `enable_restore` is false |
+| <a name="s3_bucket_arn">s3_bucket_arn</a>                 | ARN of the bucket holding the backups                           |
+| <a name="s3_bucket_name">s3_bucket_name</a>               | Name of the bucket holding the backups                          |
+| <a name="schedule_expression">schedule_expression</a>     | The EventBridge schedule the backup runs on                     |
 <!-- markdownlint-restore -->
 
